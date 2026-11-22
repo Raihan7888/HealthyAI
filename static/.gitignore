@@ -1,23 +1,26 @@
 
-# Python
-venv/
+# Python environment
 .venv/
+venv/
 __pycache__/
 *.pyc
 
-# Secrets
+# Node.js dependencies
+node_modules/
+
+# Private configuration
 .env
 .env.*
 !.env.example
-
-# Editor files
-.vscode/
-.idea/
 
 # Temporary files
 *.log
 .DS_Store
 
-# Local database
+# Local databases
 *.db
 *.sqlite3
+
+# Editor settings
+.vscode/
+.idea/
