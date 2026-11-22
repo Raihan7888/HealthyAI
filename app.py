@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import io
 import json
+import os
 import sqlite3
 import uuid
 from datetime import datetime, timezone
@@ -59,7 +60,17 @@ app = Flask(
 
 app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 
+PUBLIC_DEMO = os.environ.get("PUBLIC_DEMO", "false").lower() == "true"
 
+@app.before_request
+def protect_public_demo():
+    if PUBLIC_DEMO and request.path in {
+        "/api/history",
+        "/api/stats",
+    }:
+        return jsonify({
+            "error": "Shared prediction history is disabled in the public demo."
+        }), 403
 # ============================================================
 # DATABASE
 # ============================================================
