@@ -1080,47 +1080,42 @@ async function loadHistory() {
 // STATS
 // ============================================================
 
+
 async function loadStats() {
+    const totalEl = $("totalStat");
+    const avgEl = $("avgStat");
+    const reviewEl = $("reviewStat");
+
+    // Safe defaults for public-demo mode
+    totalEl.textContent = "0";
+    avgEl.textContent = "N/A";
+    reviewEl.textContent = "0";
 
     try {
+        const response = await fetch("/api/stats");
 
-        const response =
-            await fetch(
-                "/api/stats"
-            );
+        if (!response.ok) {
+            console.warn("Statistics unavailable:", response.status);
+            return;
+        }
 
+        const stats = await response.json();
 
-        const stats =
-            await response.json();
+        totalEl.textContent = stats.total ?? 0;
 
+        avgEl.textContent =
+            stats.average_confidence != null
+                ? `${stats.average_confidence}%`
+                : "N/A";
 
-        $(
-            "totalStat"
-        ).textContent =
-            stats.total;
-
-
-        $(
-            "avgStat"
-        ).textContent =
-            `${stats.average_confidence}%`;
-
-
-        $(
-            "reviewStat"
-        ).textContent =
-            stats.bands.REVIEW
-            || 0;
-
+        reviewEl.textContent =
+            stats.bands?.REVIEW ?? 0;
 
     } catch (error) {
-
-        console.error(
-            "Stats error:",
-            error
-        );
+        console.error("Stats error:", error);
     }
 }
+
 
 
 // ============================================================
