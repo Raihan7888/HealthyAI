@@ -310,7 +310,8 @@ def save_prediction(payload):
 def index():
 
     return render_template(
-        "index.html"
+        "index.html",
+        public_demo=PUBLIC_DEMO
     )
 
 

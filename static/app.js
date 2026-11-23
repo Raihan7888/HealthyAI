@@ -5,7 +5,7 @@ const $ = (id) =>
 let selectedFile = null;
 let session = null;
 let currentResult = null;
-
+const PUBLIC_DEMO = window.HEALTHYAI_PUBLIC_DEMO === true;
 
 const classNames = {
 
@@ -807,6 +807,7 @@ async function analyze() {
 // ============================================================
 
 async function saveHistory() {
+    if (PUBLIC_DEMO) return;
 
     if (!currentResult) {
 
@@ -972,6 +973,22 @@ async function downloadReport() {
 // ============================================================
 
 async function loadHistory() {
+    if (PUBLIC_DEMO) {
+        const body = $("historyBody");
+
+        if (body) {
+            body.innerHTML = `
+                <tr>
+                    <td colspan="5" class="empty-cell">
+                        Prediction history is unavailable in this public demonstration.
+                        You can still analyze images and download PDF reports.
+                    </td>
+                </tr>
+            `;
+        }
+
+        return;
+    }
 
     try {
 
@@ -1336,6 +1353,8 @@ $(
 ).addEventListener(
     "click",
     async () => {
+        if (PUBLIC_DEMO) return;
+
 
         const confirmed =
             confirm(
@@ -1368,5 +1387,28 @@ $(
 // ============================================================
 
 loadModel();
-loadHistory();
-loadStats();
+
+if (PUBLIC_DEMO) {
+    const clearButton = $("clearHistory");
+    if (clearButton) {
+        clearButton.style.display = "none";
+    }
+    loadHistory();
+
+    // Disable saving shared history in the public demo.
+    const saveButton = $("historyBtn");
+
+    if (saveButton) {
+        saveButton.hidden = true;
+        saveButton.style.display = "none";
+    }
+
+    // Show safe defaults when shared statistics are unavailable.
+    $("totalStat").textContent = "N/A";
+    $("avgStat").textContent = "N/A";
+    $("reviewStat").textContent = "N/A";
+
+} else {
+    loadHistory();
+    loadStats();
+}

@@ -661,10 +661,13 @@
     src="{{ url_for('static', filename='vendor/ort.min.js') }}"
 ></script>
 
+<script>
+    window.HEALTHYAI_PUBLIC_DEMO = {{ public_demo | tojson }};
+</script>
+
 <script
     src="{{ url_for('static', filename='app.js') }}"
 ></script>
 
 </body>
-
 </html>
